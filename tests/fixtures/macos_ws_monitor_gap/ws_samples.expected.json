@@ -1,5 +1,13 @@
 [
   {
-    "host": "example-mac"
+    "__dropped": true,
+    "host": "example-mac",
+    "gap_s": 5
+  },
+  {
+    "gap_seconds": 5,
+    "host": "example-mac",
+    "source": "cc-stream-macos-fanout-io",
+    "index": "os_metrics"
   }
 ]
