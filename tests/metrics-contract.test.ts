@@ -15,6 +15,12 @@ interface PublishConf {
   dimensions: string[];
 }
 
+interface AggregationConf {
+  aggregations: string[];
+  groupbys: string[];
+  cumulative?: boolean;
+}
+
 interface Pipeline {
   functions?: { id: string; conf?: unknown }[];
 }
@@ -23,18 +29,24 @@ function readYaml(relative: string): unknown {
   return yamlParse(readFileSync(join(PACK_ROOT, relative), "utf8"));
 }
 
-function publisherOf(pipeline: string): PublishConf {
+function functionConfOf<T>(pipeline: string, id: string): T {
   const conf = readYaml(
     join("default", "pipelines", pipeline, "conf.yml"),
   ) as Pipeline;
-  const publishers = (conf.functions ?? []).filter(
-    (fn) => fn.id === "publish_metrics",
-  );
+  const matches = (conf.functions ?? []).filter((fn) => fn.id === id);
   expect(
-    publishers,
-    `${pipeline} must publish exactly one metric set`,
+    matches,
+    `${pipeline} must have exactly one '${id}' function`,
   ).toHaveLength(1);
-  return publishers[0]?.conf as PublishConf;
+  return matches[0]?.conf as T;
+}
+
+function publisherOf(pipeline: string): PublishConf {
+  return functionConfOf<PublishConf>(pipeline, "publish_metrics");
+}
+
+function aggregationOf(pipeline: string): AggregationConf {
+  return functionConfOf<AggregationConf>(pipeline, "aggregation");
 }
 
 it("routes exec events to the starts pipeline without consuming them", () => {
@@ -90,4 +102,28 @@ it("publishes the derived metric names, types, and dimensions", () => {
     ],
     dimensions: ["host"],
   });
+});
+
+const COUNTERS = [
+  "macos_process_starts",
+  "macos_app_checkins",
+  "macos_launchd_spawns",
+];
+
+it("counters are cumulative and the window gauge is not", () => {
+  for (const pipeline of COUNTERS) {
+    expect(aggregationOf(pipeline).cumulative, pipeline).toBe(true);
+  }
+  expect(aggregationOf("macos_ws_monitor_gap").cumulative).not.toBe(true);
+});
+
+it("aggregation keys use the function schema names", () => {
+  for (const pipeline of [...COUNTERS, "macos_ws_monitor_gap"]) {
+    const conf = aggregationOf(pipeline);
+    expect(conf.aggregations, pipeline).toBeDefined();
+    expect(conf.groupbys, pipeline).toBeDefined();
+    expect(conf).not.toHaveProperty("aggregates");
+    expect(conf).not.toHaveProperty("groupByFields");
+    expect(conf).not.toHaveProperty("idleBucketTimeLimit");
+  }
 });
