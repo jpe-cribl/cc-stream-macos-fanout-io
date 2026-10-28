@@ -1,32 +1,28 @@
 # `.github/` — workflow callers for Cribl packs
 
-The workflows in this directory are event callers. Pack test, release, and E2E
-jobs call reusable workflows from `jpe-cribl/.github` at a pinned commit. The
-shared workflows provide the CI behavior and shared scripts.
+The workflows in this directory are thin callers. Each one runs a job by calling
+a reusable workflow from a shared org repository at a pinned ref. The shared
+workflows provide the CI behavior and shared scripts.
 
 ## Installation
 
 These caller workflows are copied when a pack is scaffolded from the template.
-The reusable workflows resolve at runtime from `jpe-cribl/.github`; shared CI
-scripts are checked out under `.gh-shared/` in CI.
+Shared CI scripts are checked out under `.gh-shared/` in CI.
+
+Set the pack type in `test.yml` when scaffolding a pack:
+
+```yaml
+with:
+  pack_type: stream   # use edge for Cribl Edge packs
+```
 
 ## Usage
 
-- A PR touching `default/`, `data/samples/`, `tests/`, `scripts/`, or
-  `package.json` runs `test.yml`.
-- A manual dispatch or PR touching `e2e/**` runs `e2e.yml`.
-- A version tag runs `pack-release.yml` and publishes the `.crbl` artifact.
-- Release automation is handled by `release.yml`.
+| File | Runs on | Calls |
+| --- | --- | --- |
+| `test.yml` | PR touching `default/`, `data/samples/`, `tests/`, `scripts/`, `package.json`; push to `main` | `cribl-pack-test.yml` in `jpe-cribl/.github` |
 
-## Shared workflow calls
-
-- `test.yml` calls `cribl-pack-test.yml` from `jpe-cribl/.github`.
-  Inputs: `pack_type`, `cribl_versions`, `node_version`, and `yq_version`.
-- `pack-release.yml` calls `cribl-pack-release.yml` from `jpe-cribl/.github`.
-  Inputs: `additional_files` and `tag`.
-- `e2e.yml` calls `cribl-pack-e2e.yml` from `jpe-cribl/.github`.
-
-The test and validation jobs check out the shared scripts into `.gh-shared/`.
+Packs keep only the callers they use.
 
 ## Updating shared workflow inputs
 
