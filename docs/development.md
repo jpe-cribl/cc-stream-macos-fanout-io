@@ -22,8 +22,8 @@ corepack enable pnpm
 ## First-time setup
 
 ```sh
-git clone https://github.com/dryvist/cc-edge-<pack>-io.git
-cd cc-edge-<pack>-io
+git clone https://github.com/<owner>/cc-stream-<pack>-io.git
+cd cc-stream-<pack>-io
 make install            # pnpm install in tests/ (test dependencies only)
 ```
 

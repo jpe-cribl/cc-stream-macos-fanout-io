@@ -1,5 +1,5 @@
 {
-  description = "Dev shell for dryvist Cribl pack template — delegates to nix-devenv's typescript subflake.";
+  description = "Dev shell for the Cribl pack template — delegates to nix-devenv's typescript subflake.";
 
   # Pin to the typescript SUBFLAKE (?dir=shells/typescript), not the root
   # nix-devenv flake. The root flake imports cachix/devenv to support its

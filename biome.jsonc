@@ -1,5 +1,5 @@
 {
-  // dryvist canonical Biome config (mirror of JacobPEvans/.github/biome.jsonc).
+  // Canonical Biome config (mirror of JacobPEvans/.github/biome.jsonc).
   "$schema": "./tests/node_modules/@biomejs/biome/configuration_schema.json",
   "vcs": {
     "enabled": true,
