@@ -21,14 +21,14 @@ functions:
     filter: "true"
     disabled: false
     conf:
-      aggregates:
+      aggregations:
         - "count().where(label != '').as(spawns)"
-      groupByFields:
+      groupbys:
         - host
         - label
       timeWindow: 60s
       lagTolerance: 10s
-      idleBucketTimeLimit: 10s
+      idleTimeLimit: 10s
   - id: publish_metrics
     filter: "true"
     disabled: false

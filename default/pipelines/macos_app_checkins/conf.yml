@@ -20,14 +20,14 @@ functions:
     filter: "true"
     disabled: false
     conf:
-      aggregates:
+      aggregations:
         - "count().where(event_type == 'exec' && app != '').as(app_checkins)"
-      groupByFields:
+      groupbys:
         - host
         - app
       timeWindow: 60s
       lagTolerance: 10s
-      idleBucketTimeLimit: 10s
+      idleTimeLimit: 10s
   - id: publish_metrics
     filter: "true"
     disabled: false
