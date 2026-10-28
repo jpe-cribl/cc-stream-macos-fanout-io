@@ -1,0 +1,29 @@
+{
+  "name": "@dryvist/cc-edge-pack-tests",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Cribl pack test harness — Vitest-based, scaffolded into every dryvist pack from cc-edge-pack-template.",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check ..",
+    "format": "biome format --write .."
+  },
+  "packageManager": "pnpm@12.14.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.0.0",
+    "@types/node": "^24.0.0",
+    "@types/tar": "^7.0.0",
+    "lefthook": "^2.0.0",
+    "tar": "^7.5.22",
+    "typescript": "^7.0.0",
+    "vite": "^8.0.0",
+    "vitest": "^5.0.0",
+    "yaml": "^2.6.0"
+  }
+}

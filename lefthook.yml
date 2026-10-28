@@ -1,0 +1,9 @@
+# Pre-commit hooks. Enter the dev shell (`nix develop` or direnv), then run `lefthook install`.
+# biome and lefthook come from nixpkgs; nothing is installed from the npm registry.
+pre-commit:
+  parallel: true
+  commands:
+    biome:
+      glob: '*.{js,jsx,ts,tsx,json,jsonc,yaml,yml,md}'
+      run: biome check --no-errors-on-unmatched --write {staged_files}
+      stage_fixed: true
