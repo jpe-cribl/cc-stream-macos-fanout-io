@@ -26,3 +26,25 @@ routes:
     filter: "sourcetype=='macos:process:lifecycle'"
     clones: []
     output: __group
+  - id: launchd_spawns
+    name: Launchd Spawns
+    final: true
+    disabled: false
+    pipeline: macos_launchd_spawns
+    description: Counts launchd spawn lines per host and service label.
+    enableOutputExpression: false
+    targetContext: group
+    filter: "sourcetype=='macos:unified_log'"
+    clones: []
+    output: __group
+  - id: ws_monitor_gap
+    name: WindowServer Monitor Gap
+    final: true
+    disabled: false
+    pipeline: macos_ws_monitor_gap
+    description: Reports the largest WindowServer monitor loop gap per window.
+    enableOutputExpression: false
+    targetContext: group
+    filter: "sourcetype=='ws-monitor'"
+    clones: []
+    output: __group
