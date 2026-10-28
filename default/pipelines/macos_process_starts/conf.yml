@@ -26,15 +26,6 @@ functions:
       timeWindow: 60s
       lagTolerance: 10s
       idleBucketTimeLimit: 10s
-  - id: eval
-    filter: "true"
-    disabled: false
-    conf:
-      add:
-        - name: source
-          value: "'cc-stream-macos-fanout-io'"
-        - name: _time
-          value: "_time || Date.now() / 1000"
   - id: publish_metrics
     filter: "true"
     disabled: false
@@ -51,5 +42,9 @@ functions:
     disabled: false
     conf:
       add:
+        - name: source
+          value: "'cc-stream-macos-fanout-io'"
+        - name: _time
+          value: "_time || Date.now() / 1000"
         - name: index
           value: "'os_metrics'"
