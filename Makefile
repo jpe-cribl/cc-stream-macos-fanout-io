@@ -48,12 +48,11 @@ lint: ## Lint with Biome (lint + format check)
 format: ## Auto-format with Biome
 	cd tests && pnpm run format
 
-validate: build ## Build pack and instruct on validator usage
+validate: build ## Build pack and remind to run the structural pack validator
 	@echo ""
 	@echo "Pack built: $(CRBL_FILE)"
 	@echo ""
-	@echo "To run vct-cribl-pack-validator (27+ structural checks), from the validator repo:"
-	@echo "  cd ~/git/vct-cribl-pack-validator/main && claude /validate-pack $$PWD/$(CRBL_FILE)"
+	@echo "Run your structural pack validator against $(CRBL_FILE) before opening a PR."
 
 clean: ## Remove build artifacts, node_modules, and stop Docker
 	rm -f *.crbl
