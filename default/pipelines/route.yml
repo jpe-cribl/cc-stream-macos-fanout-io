@@ -2,19 +2,27 @@ id: default
 groups: {}
 comments: []
 routes:
-  # Demo route. Replace with your real routes when scaffolding a new pack.
-  # Validator rules:
-  #   - id and pipeline must be descriptive (no 'main', no 'route1')
-  #   - filter must be a real expression (not literally 'false' / '0')
-  #   - output MUST be __group (not input_id)
-  - id: passthrough
-    name: Demo Passthrough
-    final: true
+  # Exec events are cloned to the process-starts pipeline (final: false). The
+  # original event then reaches the check-in route, which consumes it.
+  - id: process_exec_starts
+    name: Process Exec Starts
+    final: false
     disabled: false
-    pipeline: passthrough
-    description: "Demo route — replace when scaffolding a new pack."
+    pipeline: macos_process_starts
+    description: Counts macOS exec events per host and executable basename.
     enableOutputExpression: false
     targetContext: group
-    filter: "datatype=='cribl-demo'"
+    filter: "event_type=='exec'"
+    clones: []
+    output: __group
+  - id: process_app_checkins
+    name: Process App Check-ins
+    final: true
+    disabled: false
+    pipeline: macos_app_checkins
+    description: Counts macOS app bundle launches per host and bundle name.
+    enableOutputExpression: false
+    targetContext: group
+    filter: "sourcetype=='macos:process:lifecycle'"
     clones: []
     output: __group

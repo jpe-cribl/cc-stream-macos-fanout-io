@@ -1,0 +1,57 @@
+output: default
+streamtags: []
+groups: {}
+asyncFuncTimeout: 1000
+description: >-
+  Counts macOS app bundle launches per host and bundle name. Only exec events
+  whose executable path sits inside a <Name>.app/Contents/MacOS/ bundle add to
+  the count. The Aggregations function consumes every event on its route and
+  emits only aggregates. Publishes macos_app_checkins_total.
+functions:
+  - id: eval
+    filter: "true"
+    disabled: false
+    conf:
+      add:
+        - name: app
+          value: >-
+            (/([^\/]+)\.app\/Contents\/MacOS\//.exec(exe_path || '') || [])[1] || ''
+  - id: aggregation
+    filter: "true"
+    disabled: false
+    conf:
+      aggregates:
+        - "count().where(event_type == 'exec' && app != '').as(app_checkins)"
+      groupByFields:
+        - host
+        - app
+      timeWindow: 60s
+      lagTolerance: 10s
+      idleBucketTimeLimit: 10s
+  - id: eval
+    filter: "true"
+    disabled: false
+    conf:
+      add:
+        - name: source
+          value: "'cc-stream-macos-fanout-io'"
+        - name: _time
+          value: "_time || Date.now() / 1000"
+  - id: publish_metrics
+    filter: "true"
+    disabled: false
+    conf:
+      metrics:
+        - field: app_checkins
+          metricName: "'macos_app_checkins_total'"
+          type: counter
+      dimensions:
+        - host
+        - app
+  - id: eval
+    filter: "true"
+    disabled: false
+    conf:
+      add:
+        - name: index
+          value: "'os_metrics'"

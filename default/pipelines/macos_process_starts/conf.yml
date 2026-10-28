@@ -1,0 +1,55 @@
+output: default
+streamtags: []
+groups: {}
+asyncFuncTimeout: 1000
+description: >-
+  Counts macOS exec events per host and executable basename. The Aggregations
+  function consumes every event on its route and emits only aggregates, one per
+  host and executable in each 60 s window. Publishes macos_process_starts_total.
+functions:
+  - id: eval
+    filter: "true"
+    disabled: false
+    conf:
+      add:
+        - name: exe
+          value: "(exe_path || '').split('/').pop()"
+  - id: aggregation
+    filter: "true"
+    disabled: false
+    conf:
+      aggregates:
+        - "count().as(starts)"
+      groupByFields:
+        - host
+        - exe
+      timeWindow: 60s
+      lagTolerance: 10s
+      idleBucketTimeLimit: 10s
+  - id: eval
+    filter: "true"
+    disabled: false
+    conf:
+      add:
+        - name: source
+          value: "'cc-stream-macos-fanout-io'"
+        - name: _time
+          value: "_time || Date.now() / 1000"
+  - id: publish_metrics
+    filter: "true"
+    disabled: false
+    conf:
+      metrics:
+        - field: starts
+          metricName: "'macos_process_starts_total'"
+          type: counter
+      dimensions:
+        - host
+        - exe
+  - id: eval
+    filter: "true"
+    disabled: false
+    conf:
+      add:
+        - name: index
+          value: "'os_metrics'"
