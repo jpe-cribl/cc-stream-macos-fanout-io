@@ -8,7 +8,7 @@ largest WindowServer monitor loop gap per window.
 
 The pack ships no sources. It is attached to a Stream source by pipeline id: a
 connection that names `pack:cc-stream-macos-fanout-io` routes events through its
-routes. Release builds produce a `.crbl` asset with `make build`.
+routes. `make build` writes the `.crbl` artifact.
 
 ## Usage
 
