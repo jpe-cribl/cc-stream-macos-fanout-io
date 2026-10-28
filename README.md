@@ -40,6 +40,9 @@ make build       # .crbl artifact
 - `ws_monitor_gap_seconds` is the maximum `gap_s` per host in each window.
 - Each pipeline aggregates every event on its route in 60 s windows. It emits
   aggregates only; original events do not pass through.
+- The `macos_process_starts_total`, `macos_app_checkins_total`, and
+  `macos_launchd_spawns_total` counters are cumulative: each series keeps a
+  running total across windows.
 - `process_exec_starts` is non-final, so exec events continue to
   `process_app_checkins`, which consumes them.
 - The pack has no catch-all route. Events that match no route are not handled by
