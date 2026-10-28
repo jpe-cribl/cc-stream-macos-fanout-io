@@ -27,8 +27,6 @@ functions:
         - app
       timeWindow: 60s
       cumulative: true
-      lagTolerance: 10s
-      idleTimeLimit: 10s
   - id: publish_metrics
     filter: "true"
     disabled: false
