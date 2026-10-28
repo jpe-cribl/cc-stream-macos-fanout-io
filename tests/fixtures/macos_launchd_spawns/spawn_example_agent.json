@@ -9,16 +9,5 @@
     "subsystem": "com.apple.xpc.launchd",
     "category": "default",
     "_raw": "Successfully spawned example-agent[123] because xpc event"
-  },
-  {
-    "_time": 1761657600,
-    "host": "example-mac",
-    "source": "macos:unified_log",
-    "index": "os",
-    "sourcetype": "macos:unified_log",
-    "process": "launchd",
-    "subsystem": "com.apple.xpc.launchd",
-    "category": "default",
-    "_raw": "Successfully spawned example-agent[456] because xpc event"
   }
 ]

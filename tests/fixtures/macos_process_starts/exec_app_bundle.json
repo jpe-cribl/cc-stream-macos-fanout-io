@@ -10,17 +10,5 @@
     "ppid": 4001,
     "exe_path": "/Users/example/Applications/Example Shell.app/Contents/MacOS/example-shell",
     "target_exe": "/Users/example/Applications/Example Shell.app/Contents/MacOS/example-shell"
-  },
-  {
-    "_time": 1793204042,
-    "host": "example-mac",
-    "source": "macos:process:lifecycle",
-    "index": "os",
-    "sourcetype": "macos:process:lifecycle",
-    "event_type": "exec",
-    "pid": 4421,
-    "ppid": 4001,
-    "exe_path": "/Users/example/Applications/Example Shell.app/Contents/MacOS/example-shell",
-    "target_exe": "/Users/example/Applications/Example Shell.app/Contents/MacOS/example-shell"
   }
 ]

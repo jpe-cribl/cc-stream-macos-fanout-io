@@ -9,27 +9,5 @@
     "io_probe_pending_s": 0,
     "memory_free_pct": 75,
     "swap_used_mb": 2632.56
-  },
-  {
-    "_time": 1793204040,
-    "host": "example-mac",
-    "source": "ws-monitor",
-    "index": "mac_perf",
-    "sourcetype": "ws-monitor",
-    "gap_s": 5,
-    "io_probe_pending_s": 0,
-    "memory_free_pct": 76,
-    "swap_used_mb": 2632.56
-  },
-  {
-    "_time": 1793204040,
-    "host": "example-mac",
-    "source": "ws-monitor",
-    "index": "mac_perf",
-    "sourcetype": "ws-monitor",
-    "gap_s": 7,
-    "io_probe_pending_s": 0,
-    "memory_free_pct": 75,
-    "swap_used_mb": 2576.56
   }
 ]
