@@ -1,0 +1,14 @@
+[
+  {
+    "__dropped": true,
+    "host": "example-mac",
+    "app": "Example Shell"
+  },
+  {
+    "app_checkins": 1,
+    "host": "example-mac",
+    "app": "Example Shell",
+    "source": "cc-stream-macos-fanout-io",
+    "index": "os_metrics"
+  }
+]

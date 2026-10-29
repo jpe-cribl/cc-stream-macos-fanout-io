@@ -2,7 +2,7 @@
   "name": "@dryvist/cc-edge-pack-tests",
   "version": "0.0.0",
   "private": true,
-  "description": "Cribl pack test harness — Vitest-based, scaffolded into every dryvist pack from cc-edge-pack-template.",
+  "description": "Cribl pack test harness — Vitest-based, scaffolded into every pack from the template repository.",
   "type": "module",
   "scripts": {
     "test": "vitest run",

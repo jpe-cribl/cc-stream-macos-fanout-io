@@ -1,6 +1,6 @@
-# Validator rules (vct-cribl-pack-validator)
+# Validator rules
 
-Non-negotiable rules per the [validator skill](https://github.com/VisiCore/vct-cribl-pack-validator).
+Non-negotiable structural rules for Cribl packs.
 The CI `validate` job runs the shared `scripts/validate-pack-structure.sh` from
 `jpe-cribl/.github/scripts/` (checked out to `.gh-shared/` in CI) to enforce the
 machine-checkable subset; the rest are conventions to follow.
@@ -20,9 +20,7 @@ machine-checkable subset; the rest are conventions to follow.
 
 ```sh
 make build      # produces <pack-name>-<version>.crbl
-# Then from the validator repo:
-cd ~/git/vct-cribl-pack-validator/main
-claude /validate-pack /path/to/<pack-name>-<version>.crbl
 ```
 
-`make validate` prints the exact command after building.
+Run the deep structural validator of your choice against the `.crbl` file.
+`make validate` builds the pack and prints a reminder to run it.

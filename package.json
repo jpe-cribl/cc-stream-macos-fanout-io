@@ -1,18 +1,17 @@
 {
-  "name": "cc-stream-demo-io",
-  "version": "1.0.0",
+  "name": "cc-stream-macos-fanout-io",
+  "version": "0.1.0",
   "minLogStreamVersion": "4.16.0",
-  "author": "dryvist <hello@dryvist.example>",
-  "description": "Demo passthrough pack — replace name/displayName/description/author when scaffolding from this template.",
-  "displayName": "Cribl Stream Demo Pack",
+  "author": "Cribl Stream Pack Maintainers",
+  "description": "Derives macOS process, app launch, launchd spawn, and WindowServer loop-gap metrics from Edge events and emits them as native Cribl metrics.",
+  "displayName": "macOS Event Metrics",
   "tags": {
     "streamtags": [
-      "replace",
-      "with",
-      "tags"
+      "macos",
+      "metrics"
     ],
     "dataType": [
-      "logs"
+      "metrics"
     ]
   },
   "exports": []

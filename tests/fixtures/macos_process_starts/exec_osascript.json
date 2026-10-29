@@ -1,0 +1,14 @@
+[
+  {
+    "_time": 1793204042,
+    "host": "example-mac",
+    "source": "macos:process:lifecycle",
+    "index": "os",
+    "sourcetype": "macos:process:lifecycle",
+    "event_type": "exec",
+    "pid": 4321,
+    "ppid": 4210,
+    "exe_path": "/usr/bin/osascript",
+    "target_exe": "/usr/bin/osascript"
+  }
+]

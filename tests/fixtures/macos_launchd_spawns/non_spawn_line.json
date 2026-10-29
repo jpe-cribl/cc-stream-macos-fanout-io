@@ -1,0 +1,13 @@
+[
+  {
+    "_time": 1761657600,
+    "host": "example-mac",
+    "source": "macos:unified_log",
+    "index": "os",
+    "sourcetype": "macos:unified_log",
+    "process": "launchd",
+    "subsystem": "com.apple.xpc.launchd",
+    "category": "default",
+    "_raw": "Service exited with abnormal code: 1"
+  }
+]

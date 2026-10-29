@@ -1,0 +1,14 @@
+[
+  {
+    "__dropped": true,
+    "host": "example-mac",
+    "exe": "example-shell"
+  },
+  {
+    "starts": 1,
+    "host": "example-mac",
+    "exe": "example-shell",
+    "source": "cc-stream-macos-fanout-io",
+    "index": "os_metrics"
+  }
+]

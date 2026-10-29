@@ -1,0 +1,42 @@
+output: default
+streamtags: []
+groups: {}
+asyncFuncTimeout: 1000
+description: >-
+  Reports the largest WindowServer monitor loop gap per host in each 60 s
+  window, from the gap_s field of ws-monitor samples. The Aggregations function
+  consumes every event on its route and emits only aggregates. Publishes
+  ws_monitor_gap_seconds as a gauge.
+functions:
+  - id: aggregation
+    filter: "true"
+    disabled: false
+    conf:
+      aggregations:
+        - "max(gap_s).as(gap_seconds)"
+      groupbys:
+        - host
+      timeWindow: 60s
+      lagTolerance: 10s
+      idleTimeLimit: 10s
+  - id: publish_metrics
+    filter: "true"
+    disabled: false
+    conf:
+      metrics:
+        - field: gap_seconds
+          metricName: "'ws_monitor_gap_seconds'"
+          type: gauge
+      dimensions:
+        - host
+  - id: eval
+    filter: "true"
+    disabled: false
+    conf:
+      add:
+        - name: source
+          value: "'cc-stream-macos-fanout-io'"
+        - name: _time
+          value: "_time || Date.now() / 1000"
+        - name: index
+          value: "'os_metrics'"

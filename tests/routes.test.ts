@@ -7,9 +7,9 @@
  * - route.yml exists
  * - every route declares a pipeline
  * - every referenced pipeline has a default/pipelines/<name>/conf.yml
- * - every route uses 'output: __group' (vct-cribl-pack-validator rule)
+ * - every route uses 'output: __group' (pack convention)
  * - no route filter is statically falsy (would never match)
- * - no pipeline named 'main' (validator rule)
+ * - no pipeline named 'main' (pack convention)
  * - DYNAMIC: for each route with an auto-resolvable filter, a synthetic
  *   event matching that filter triggers the named pipeline and isn't dropped
  */
@@ -66,14 +66,14 @@ describe("route structure", () => {
       }
     });
 
-    it("routes use __group output (vct-cribl-pack-validator rule)", () => {
+    it("routes use __group output (pack convention)", () => {
       const config = loadRoutes();
       const bad = (config.routes ?? [])
         .filter((r) => r.output !== "__group")
         .map((r) => r.id);
       expect(
         bad.length,
-        `Routes not using output: __group: ${JSON.stringify(bad)}. Per validator rule, routes should target __group so source renames don't break routing.`,
+        `Routes not using output: __group: ${JSON.stringify(bad)}. Per pack convention,routes should target __group so source renames don't break routing.`,
       ).toBe(0);
     });
 
@@ -91,12 +91,12 @@ describe("route structure", () => {
       }
     });
 
-    it("no pipeline named main (vct-cribl-pack-validator rule)", () => {
+    it("no pipeline named main (pack convention)", () => {
       const config = loadRoutes();
       for (const route of config.routes ?? []) {
         expect(
           route.pipeline,
-          `Route '${route.id}' uses pipeline 'main'. Per validator rule, pipelines must have descriptive names.`,
+          `Route '${route.id}' uses pipeline 'main'. Per pack convention,pipelines must have descriptive names.`,
         ).not.toBe("main");
       }
     });

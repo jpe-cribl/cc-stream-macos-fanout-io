@@ -1,105 +1,57 @@
-# cc-stream-pack-template
+# cc-stream-macos-fanout-io
 
-Template repository for new Cribl Stream packs. Provides a TypeScript +
-Vitest test harness, Biome lint/format, reusable GitHub Actions workflows, and a
-Makefile that wraps the common day-to-day commands.
-
-## What's in the box
-
-- **Test harness** — Vitest tests that validate route + pipeline behavior against
-  a live Cribl container (auto-discovered fixtures, no test code edits to add cases)
-- **CI** — reusable GitHub Actions workflows for validate + test + release
-- **Lint/format** — Biome with pre-commit hook (lefthook)
-- **Release** — release-please-driven version bumps + `.crbl` artifact upload
+Cribl Stream pack that derives native metrics from macOS Edge events. It emits
+four metrics: launchd spawns, process exec starts, app bundle launches, and the
+largest WindowServer monitor loop gap per window.
 
 ## Installation
 
-```sh
-GH_TOKEN=<org-admin-token> \
-  gh repo create dryvist/cc-edge-<source>-io \
-    --template JacobPEvans-personal/cc-stream-pack-template \
-    --public --clone
-
-cd cc-edge-<source>-io
-make install            # installs Node test deps
-nix develop             # enter the dev shell, then: lefthook install
-```
-
-Org-repo creation needs a token with `Administration: Read & write` on the
-dryvist org (standard user PATs typically can't). `make install` needs Node
-20+ and pnpm 10+. Docker is only needed for `make test`. See
-[`docs/development.md`](docs/development.md) for the dev shell.
-
-## After scaffolding
-
-Replace template placeholders before opening your first PR:
-
-- `package.json` — `name`, `displayName`, `description`, `tags`, `author`
-- `.github/workflows/test.yml` — flip `pack_type:` from `edge` to `stream` if
-  this is a Cribl Stream pack (default is `edge`)
-- `default/pack.yml` — optional: replace the empty `logo:` with a base64 PNG
-  for the Cribl UI
-
-Then replace the demo passthrough pipeline (`default/pipelines/passthrough/`)
-and its fixture (`tests/fixtures/passthrough/`) with your pack's real
-pipelines and fixtures.
+The pack ships no sources. It is attached to a Stream source by pipeline id: a
+connection that names `pack:cc-stream-macos-fanout-io` routes events through its
+routes. `make build` writes the `.crbl` artifact.
 
 ## Usage
 
 ```sh
-make docker-up          # start cribl/cribl test container
-make test               # vitest run (auto-discovers fixtures)
-make typecheck          # tsc --noEmit
-make lint               # biome check
-make format             # biome format --write
-make build              # build .crbl artifact
-make docker-down        # stop test container
+make install     # Node test dependencies (pnpm)
+make docker-up   # Cribl test container
+make test        # Vitest: route and pipeline fixtures, metric contract
+make lint        # Biome check
+make build       # .crbl artifact
 ```
 
-Add a fixture under `tests/fixtures/<pipeline>/<case>.json` and `make test`
-picks it up automatically — no code changes required.
+## Routes and metrics
 
-End-to-end proof against a real routing engine (not `/preview`):
+| Route | Filter | Pipeline | Metric | Type | Dimensions |
+| --- | --- | --- | --- | --- | --- |
+| `process_exec_starts` | `event_type=='exec'` | `macos_process_starts` | `macos_process_starts_total` | counter | `host`, `exe` |
+| `process_app_checkins` | `sourcetype=='macos:process:lifecycle'` | `macos_app_checkins` | `macos_app_checkins_total` | counter | `host`, `app` |
+| `launchd_spawns` | `sourcetype=='macos:unified_log'` | `macos_launchd_spawns` | `macos_launchd_spawns_total` | counter | `host`, `label` |
+| `ws_monitor_gap` | `sourcetype=='ws-monitor'` | `macos_ws_monitor_gap` | `ws_monitor_gap_seconds` | gauge | `host` |
 
-```sh
-node --experimental-strip-types e2e/run.ts          # 1000 events in -> counted out
-KEEP=1 node --experimental-strip-types e2e/run.ts   # keep Cribl up afterward:
-                                                    # http://localhost:19000 (admin/admin)
-```
+## Behavior
 
-See [`docs/e2e-testing.md`](docs/e2e-testing.md).
+- `exe` is the basename of `exe_path`.
+- `app` is the `<Name>.app` bundle name parsed from `exe_path`. Only exec events
+  whose path sits inside `.app/Contents/MacOS/` count. Other lifecycle events
+  produce rows with an empty `app` and a zero count.
+- `label` is the service label in a `Successfully spawned <label>[<pid>]` line.
+  Other unified-log lines produce rows with an empty `label` and a zero count.
+- `ws_monitor_gap_seconds` is the maximum `gap_s` per host in each window.
+- Each pipeline aggregates every event on its route in 60 s windows. It emits
+  aggregates only; original events do not pass through.
+- The `macos_process_starts_total`, `macos_app_checkins_total`, and
+  `macos_launchd_spawns_total` counters are cumulative: each series keeps a
+  running total across windows.
+- `process_exec_starts` is non-final, so exec events continue to
+  `process_app_checkins`, which consumes them.
+- The pack has no catch-all route. Events that match no route are not handled by
+  its pipelines.
+- The pack ships no sources and sets no destinations. Connections attach these
+  routes by pipeline id.
 
-## Releases
+## Tests
 
-Don't tag versions manually. release-please opens a PR with the computed
-version bump on every push to `main`; merge that PR to publish a release. See
-[`docs/release-process.md`](docs/release-process.md).
-
-## Documentation
-
-| Doc | What it covers |
-| --- | --- |
-| [`docs/development.md`](docs/development.md) | Local dev setup, Make targets, optional Nix shell |
-| [`docs/test-harness.md`](docs/test-harness.md) | What gets tested, fixture conventions, Cribl version matrix |
-| [`docs/e2e-testing.md`](docs/e2e-testing.md) | Real-container e2e runs, KEEP=1 inspection, CI login options |
-| [`docs/file-boundary.md`](docs/file-boundary.md) | Generic vs pack-specific files (sync rules) |
-| [`docs/release-process.md`](docs/release-process.md) | release-please flow, version bump rules |
-| [`docs/validator-rules.md`](docs/validator-rules.md) | Pack-structure validation rules + how they're enforced |
-| [`.github/README.md`](.github/README.md) | Reusable workflows reference |
-
-## Contributing
-
-Conventional commits required (`feat:`, `fix:`, `chore:`, `docs:`). Branches
-must start with `feat/`, `fix/`, `chore/`, etc. (org ruleset). PRs against
-`main` are squash-merged.
-
-Changes here propagate to every downstream pack — tread carefully. See
-[`AGENTS.md`](AGENTS.md) and [`docs/file-boundary.md`](docs/file-boundary.md).
-
-## License
-
-Apache-2.0 — see [`LICENSE`](LICENSE).
-
----
-
-> Part of a [larger ecosystem of ~40 repos](https://docs.jacobpevans.com) — see how it all fits together.
+`tests/fixtures/<pipeline>/<case>.json` holds input events, and
+`<case>.expected.json` holds the expected output fields. The metric contract
+test pins metric names, types, dimensions, and route order.

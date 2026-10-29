@@ -1,0 +1,14 @@
+[
+  {
+    "__dropped": true,
+    "host": "example-mac",
+    "label": "example-agent"
+  },
+  {
+    "spawns": 1,
+    "host": "example-mac",
+    "label": "example-agent",
+    "source": "cc-stream-macos-fanout-io",
+    "index": "os_metrics"
+  }
+]
