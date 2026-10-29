@@ -5,8 +5,8 @@ asyncFuncTimeout: 1000
 description: >-
   Counts macOS app bundle launches per host and bundle name. Only exec events
   whose executable path sits inside a <Name>.app/Contents/MacOS/ bundle add to
-  the count. The Aggregations function consumes every event on its route and
-  emits only aggregates. Publishes macos_app_checkins_total.
+  the count. Other lifecycle events are dropped before aggregation. Publishes
+  macos_app_checkins_total.
 functions:
   - id: eval
     filter: "true"
@@ -16,6 +16,10 @@ functions:
         - name: app
           value: >-
             (/([^\/]+)\.app\/Contents\/MacOS\//.exec(exe_path || '') || [])[1] || ''
+  - id: drop
+    filter: "event_type != 'exec' || app == ''"
+    disabled: false
+    conf: {}
   - id: aggregation
     filter: "true"
     disabled: false

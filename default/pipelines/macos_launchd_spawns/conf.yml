@@ -5,8 +5,7 @@ asyncFuncTimeout: 1000
 description: >-
   Counts launchd spawn lines per host and service label. A spawn line is a
   launchd event whose text starts with "Successfully spawned <label>[<pid>]".
-  The Aggregations function consumes every event on its route and emits only
-  aggregates, and non-spawn lines add nothing to the count. Publishes
+  Non-spawn lines are dropped before aggregation. Publishes
   macos_launchd_spawns_total.
 functions:
   - id: eval
@@ -17,6 +16,10 @@ functions:
         - name: label
           value: >-
             process === 'launchd' && (/Successfully spawned ([^\[\s]+)/.exec(_raw || '') || [])[1] || ''
+  - id: drop
+    filter: "label == ''"
+    disabled: false
+    conf: {}
   - id: aggregation
     filter: "true"
     disabled: false

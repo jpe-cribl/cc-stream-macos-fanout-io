@@ -3,12 +3,5 @@
     "__dropped": true,
     "host": "example-mac",
     "label": ""
-  },
-  {
-    "spawns": 0,
-    "host": "example-mac",
-    "label": "",
-    "source": "cc-stream-macos-fanout-io",
-    "index": "os_metrics"
   }
 ]
