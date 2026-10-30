@@ -1,0 +1,16 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "include-component-in-tag": false,
+  "release-type": "node",
+  "packages": {
+    ".": {
+      "package-name": "cc-stream-macos-fanout-io",
+      "changelog-path": "CHANGELOG.md",
+      "extra-files": [
+        "package.json"
+      ],
+      "draft": true,
+      "force-tag-creation": true
+    }
+  }
+}
