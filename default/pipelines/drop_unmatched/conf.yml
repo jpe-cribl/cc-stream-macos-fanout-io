@@ -1,0 +1,9 @@
+output: default
+streamtags: []
+groups: {}
+asyncFuncTimeout: 1000
+description: Drops every event no earlier route of this pack consumed.
+functions:
+  - id: drop
+    filter: "true"
+    disabled: false
