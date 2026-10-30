@@ -8,6 +8,7 @@ interface Route {
   id: string;
   pipeline: string;
   final: boolean;
+  disabled?: boolean;
 }
 
 interface PublishConf {
@@ -58,7 +59,17 @@ it("routes exec events to the starts pipeline without consuming them", () => {
     ["process_app_checkins", "macos_app_checkins", true],
     ["launchd_spawns", "macos_launchd_spawns", true],
     ["ws_monitor_gap", "macos_ws_monitor_gap", true],
+    ["default", "drop_unmatched", true],
   ]);
+});
+
+it("disables the default route so unmatched events are dropped", () => {
+  const { routes } = readYaml(join("default", "pipelines", "route.yml")) as {
+    routes: Route[];
+  };
+  expect(routes.find((r) => r.id === "default")).toMatchObject({
+    disabled: true,
+  });
 });
 
 it("publishes the derived metric names, types, and dimensions", () => {

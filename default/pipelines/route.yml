@@ -48,3 +48,14 @@ routes:
     filter: "sourcetype=='ws-monitor'"
     clones: []
     output: __group
+  - id: default
+    name: default
+    final: true
+    disabled: true
+    pipeline: drop_unmatched
+    description: Disabled so events no earlier route consumed are dropped, not forwarded by the implicit catch-all route.
+    enableOutputExpression: false
+    targetContext: group
+    filter: "true"
+    clones: []
+    output: __group
