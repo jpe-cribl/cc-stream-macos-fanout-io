@@ -12,7 +12,8 @@ interface Route {
 }
 
 interface PublishConf {
-  metrics: { field: string; metricName: string; type: string }[];
+  metricNameField: string;
+  valueField: string;
   dimensions: string[];
 }
 
@@ -74,45 +75,54 @@ it("disables the default route so unmatched events are dropped", () => {
 
 it("publishes the derived metric names, types, and dimensions", () => {
   expect(publisherOf("macos_process_starts")).toMatchObject({
-    metrics: [
-      {
-        field: "starts",
-        metricName: "'macos_process_starts_total'",
-        type: "counter",
-      },
-    ],
+    metricNameField: "_metric",
+    valueField: "_value",
     dimensions: ["host", "exe"],
   });
   expect(publisherOf("macos_app_checkins")).toMatchObject({
-    metrics: [
-      {
-        field: "app_checkins",
-        metricName: "'macos_app_checkins_total'",
-        type: "counter",
-      },
-    ],
+    metricNameField: "_metric",
+    valueField: "_value",
     dimensions: ["host", "app"],
   });
   expect(publisherOf("macos_launchd_spawns")).toMatchObject({
-    metrics: [
-      {
-        field: "spawns",
-        metricName: "'macos_launchd_spawns_total'",
-        type: "counter",
-      },
-    ],
+    metricNameField: "_metric",
+    valueField: "_value",
     dimensions: ["host", "label"],
   });
   expect(publisherOf("macos_ws_monitor_gap")).toMatchObject({
-    metrics: [
-      {
-        field: "gap_seconds",
-        metricName: "'ws_monitor_gap_seconds'",
-        type: "gauge",
-      },
-    ],
+    metricNameField: "_metric",
+    valueField: "_value",
     dimensions: ["host"],
   });
+});
+
+it("stamps the metric name and value before publishing", () => {
+  const expected: Record<string, [string, string]> = {
+    macos_process_starts: ["'macos_process_starts_total'", "starts"],
+    macos_app_checkins: ["'macos_app_checkins_total'", "app_checkins"],
+    macos_launchd_spawns: ["'macos_launchd_spawns_total'", "spawns"],
+    macos_ws_monitor_gap: ["'ws_monitor_gap_seconds'", "gap_seconds"],
+  };
+  for (const [pipeline, [name, field]] of Object.entries(expected)) {
+    const { functions = [] } = readYaml(
+      join("default", "pipelines", pipeline, "conf.yml"),
+    ) as {
+      functions?: {
+        id: string;
+        conf?: { add?: { name: string; value: string }[] };
+      }[];
+    };
+    const publishAt = functions.findIndex((fn) => fn.id === "publish_metrics");
+    const stamped = Object.fromEntries(
+      functions
+        .slice(0, publishAt)
+        .flatMap((fn) => fn.conf?.add ?? [])
+        .map((a) => [a.name, a.value]),
+    );
+    expect(stamped._metric, pipeline).toBe(name);
+    expect(stamped._value, pipeline).toBe(field);
+    expect(stamped.index, pipeline).toBe("'os_metrics'");
+  }
 });
 
 const COUNTERS = [

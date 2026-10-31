@@ -31,17 +31,6 @@ functions:
         - app
       timeWindow: 60s
       cumulative: true
-  - id: publish_metrics
-    filter: "true"
-    disabled: false
-    conf:
-      metrics:
-        - field: app_checkins
-          metricName: "'macos_app_checkins_total'"
-          type: counter
-      dimensions:
-        - host
-        - app
   - id: eval
     filter: "true"
     disabled: false
@@ -53,3 +42,16 @@ functions:
           value: "_time || Date.now() / 1000"
         - name: index
           value: "'os_metrics'"
+        - name: _metric
+          value: "'macos_app_checkins_total'"
+        - name: _value
+          value: "app_checkins"
+  - id: publish_metrics
+    filter: "true"
+    disabled: false
+    conf:
+      metricNameField: _metric
+      valueField: _value
+      dimensions:
+        - host
+        - app

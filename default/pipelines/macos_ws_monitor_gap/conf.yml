@@ -19,16 +19,6 @@ functions:
       timeWindow: 60s
       lagTolerance: 10s
       idleTimeLimit: 10s
-  - id: publish_metrics
-    filter: "true"
-    disabled: false
-    conf:
-      metrics:
-        - field: gap_seconds
-          metricName: "'ws_monitor_gap_seconds'"
-          type: gauge
-      dimensions:
-        - host
   - id: eval
     filter: "true"
     disabled: false
@@ -40,3 +30,15 @@ functions:
           value: "_time || Date.now() / 1000"
         - name: index
           value: "'os_metrics'"
+        - name: _metric
+          value: "'ws_monitor_gap_seconds'"
+        - name: _value
+          value: "gap_seconds"
+  - id: publish_metrics
+    filter: "true"
+    disabled: false
+    conf:
+      metricNameField: _metric
+      valueField: _value
+      dimensions:
+        - host
