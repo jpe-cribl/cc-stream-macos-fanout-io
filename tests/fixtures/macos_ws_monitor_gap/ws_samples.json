@@ -5,9 +5,6 @@
     "source": "ws-monitor",
     "index": "mac_perf",
     "sourcetype": "ws-monitor",
-    "gap_s": 5,
-    "io_probe_pending_s": 0,
-    "memory_free_pct": 75,
-    "swap_used_mb": 2632.56
+    "_raw": "{\"ts\":\"2026-10-28T00:00:00Z\",\"gap_s\":5,\"io_probe_pending_s\":0,\"memory_free_pct\":75,\"swap_used_mb\":2632.56}"
   }
 ]
