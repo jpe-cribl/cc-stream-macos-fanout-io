@@ -5,7 +5,7 @@
     "exe": "osascript"
   },
   {
-    "starts": 1,
+    "macos_process_starts_total": 1,
     "host": "example-mac",
     "exe": "osascript",
     "source": "cc-stream-macos-fanout-io",

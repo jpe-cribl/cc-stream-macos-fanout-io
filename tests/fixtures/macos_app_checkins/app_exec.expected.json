@@ -5,7 +5,7 @@
     "app": "Example Shell"
   },
   {
-    "app_checkins": 1,
+    "macos_app_checkins_total": 1,
     "host": "example-mac",
     "app": "Example Shell",
     "source": "cc-stream-macos-fanout-io",
