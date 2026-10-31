@@ -12,8 +12,9 @@ functions:
     filter: "true"
     disabled: false
     conf:
+      metricsMode: true
       aggregations:
-        - "max(gap_s).as(gap_seconds)"
+        - "max(gap_s).as(ws_monitor_gap_seconds)"
       groupbys:
         - host
       timeWindow: 60s
@@ -30,15 +31,3 @@ functions:
           value: "_time || Date.now() / 1000"
         - name: index
           value: "'os_metrics'"
-        - name: _metric
-          value: "'ws_monitor_gap_seconds'"
-        - name: _value
-          value: "gap_seconds"
-  - id: publish_metrics
-    filter: "true"
-    disabled: false
-    conf:
-      metricNameField: _metric
-      valueField: _value
-      dimensions:
-        - host

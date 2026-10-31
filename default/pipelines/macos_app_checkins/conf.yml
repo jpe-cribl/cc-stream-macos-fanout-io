@@ -24,8 +24,9 @@ functions:
     filter: "true"
     disabled: false
     conf:
+      metricsMode: true
       aggregations:
-        - "count().where(event_type == 'exec' && app != '').as(app_checkins)"
+        - "count().where(event_type == 'exec' && app != '').as(macos_app_checkins_total)"
       groupbys:
         - host
         - app
@@ -42,16 +43,3 @@ functions:
           value: "_time || Date.now() / 1000"
         - name: index
           value: "'os_metrics'"
-        - name: _metric
-          value: "'macos_app_checkins_total'"
-        - name: _value
-          value: "app_checkins"
-  - id: publish_metrics
-    filter: "true"
-    disabled: false
-    conf:
-      metricNameField: _metric
-      valueField: _value
-      dimensions:
-        - host
-        - app

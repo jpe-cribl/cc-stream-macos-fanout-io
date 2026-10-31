@@ -11,16 +11,11 @@ interface Route {
   disabled?: boolean;
 }
 
-interface PublishConf {
-  metricNameField: string;
-  valueField: string;
-  dimensions: string[];
-}
-
 interface AggregationConf {
   aggregations: string[];
   groupbys: string[];
   cumulative?: boolean;
+  metricsMode?: boolean;
 }
 
 interface Pipeline {
@@ -41,10 +36,6 @@ function functionConfOf<T>(pipeline: string, id: string): T {
     `${pipeline} must have exactly one '${id}' function`,
   ).toHaveLength(1);
   return matches[0]?.conf as T;
-}
-
-function publisherOf(pipeline: string): PublishConf {
-  return functionConfOf<PublishConf>(pipeline, "publish_metrics");
 }
 
 function aggregationOf(pipeline: string): AggregationConf {
@@ -73,37 +64,39 @@ it("disables the default route so unmatched events are dropped", () => {
   });
 });
 
-it("publishes the derived metric names, types, and dimensions", () => {
-  expect(publisherOf("macos_process_starts")).toMatchObject({
-    metricNameField: "_metric",
-    valueField: "_value",
+const METRICS: Record<string, { name: string; dimensions: string[] }> = {
+  macos_process_starts: {
+    name: "macos_process_starts_total",
     dimensions: ["host", "exe"],
-  });
-  expect(publisherOf("macos_app_checkins")).toMatchObject({
-    metricNameField: "_metric",
-    valueField: "_value",
+  },
+  macos_app_checkins: {
+    name: "macos_app_checkins_total",
     dimensions: ["host", "app"],
-  });
-  expect(publisherOf("macos_launchd_spawns")).toMatchObject({
-    metricNameField: "_metric",
-    valueField: "_value",
+  },
+  macos_launchd_spawns: {
+    name: "macos_launchd_spawns_total",
     dimensions: ["host", "label"],
-  });
-  expect(publisherOf("macos_ws_monitor_gap")).toMatchObject({
-    metricNameField: "_metric",
-    valueField: "_value",
+  },
+  macos_ws_monitor_gap: {
+    name: "ws_monitor_gap_seconds",
     dimensions: ["host"],
-  });
+  },
+};
+
+it("aggregates as native metrics named for the published series", () => {
+  for (const [pipeline, { name, dimensions }] of Object.entries(METRICS)) {
+    const conf = aggregationOf(pipeline);
+    expect(conf.metricsMode, pipeline).toBe(true);
+    expect(conf.aggregations, pipeline).toHaveLength(1);
+    expect(conf.aggregations[0], pipeline).toMatch(
+      new RegExp(`\\.as\\(${name}\\)$`),
+    );
+    expect(conf.groupbys, pipeline).toEqual(dimensions);
+  }
 });
 
-it("stamps the metric name and value before publishing", () => {
-  const expected: Record<string, [string, string]> = {
-    macos_process_starts: ["'macos_process_starts_total'", "starts"],
-    macos_app_checkins: ["'macos_app_checkins_total'", "app_checkins"],
-    macos_launchd_spawns: ["'macos_launchd_spawns_total'", "spawns"],
-    macos_ws_monitor_gap: ["'ws_monitor_gap_seconds'", "gap_seconds"],
-  };
-  for (const [pipeline, [name, field]] of Object.entries(expected)) {
+it("pipelines stamp the metrics index and do not publish by field", () => {
+  for (const pipeline of Object.keys(METRICS)) {
     const { functions = [] } = readYaml(
       join("default", "pipelines", pipeline, "conf.yml"),
     ) as {
@@ -112,15 +105,15 @@ it("stamps the metric name and value before publishing", () => {
         conf?: { add?: { name: string; value: string }[] };
       }[];
     };
-    const publishAt = functions.findIndex((fn) => fn.id === "publish_metrics");
+    expect(
+      functions.some((fn) => fn.id === "publish_metrics"),
+      pipeline,
+    ).toBe(false);
     const stamped = Object.fromEntries(
       functions
-        .slice(0, publishAt)
         .flatMap((fn) => fn.conf?.add ?? [])
         .map((a) => [a.name, a.value]),
     );
-    expect(stamped._metric, pipeline).toBe(name);
-    expect(stamped._value, pipeline).toBe(field);
     expect(stamped.index, pipeline).toBe("'os_metrics'");
   }
 });
