@@ -1,6 +1,6 @@
 {
   "name": "cc-stream-macos-fanout-io",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "minLogStreamVersion": "4.16.0",
   "author": "Cribl Stream Pack Maintainers",
   "description": "Derives macOS process, app launch, launchd spawn, and WindowServer loop-gap metrics from Edge events and emits them as native Cribl metrics.",
