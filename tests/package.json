@@ -11,13 +11,13 @@
     "lint": "biome check ..",
     "format": "biome format --write .."
   },
-  "packageManager": "pnpm@12.14.0",
+  "packageManager": "pnpm@12.15.0",
   "engines": {
     "node": ">=20"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.0.0",
-    "@types/node": "^24.0.0",
+    "@types/node": "^26.0.0",
     "@types/tar": "^7.0.0",
     "lefthook": "^2.0.0",
     "tar": "^7.5.22",
