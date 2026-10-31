@@ -4,10 +4,18 @@ groups: {}
 asyncFuncTimeout: 1000
 description: >-
   Reports the largest WindowServer monitor loop gap per host in each 60 s
-  window, from the gap_s field of ws-monitor samples. The Aggregations function
+  window, from the gap_s value in the JSON body of ws-monitor samples. The Aggregations function
   consumes every event on its route and emits only aggregates. Publishes
   ws_monitor_gap_seconds as a gauge.
 functions:
+  - id: serde
+    filter: "true"
+    disabled: false
+    conf:
+      mode: extract
+      type: json
+      srcField: _raw
+      fieldFilterExpr: "name=='gap_s'"
   - id: aggregation
     filter: "true"
     disabled: false
