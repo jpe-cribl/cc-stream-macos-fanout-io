@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/jpe-cribl/cc-stream-macos-fanout-io/compare/v0.1.4...v0.2.0) (2026-11-02)
+
+
+### Features
+
+* set the metrics index through a pack variable ([#11](https://github.com/jpe-cribl/cc-stream-macos-fanout-io/issues/11)) ([175f6e9](https://github.com/jpe-cribl/cc-stream-macos-fanout-io/commit/175f6e9df84093e1310195a6ae0d3364b9f3fb25))
+
 ## [0.1.4](https://github.com/jpe-cribl/cc-stream-macos-fanout-io/compare/v0.1.3...v0.1.4) (2026-10-31)
 
 
