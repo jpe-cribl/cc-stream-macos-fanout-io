@@ -8,6 +8,6 @@
     "ws_monitor_gap_seconds": 5,
     "host": "example-mac",
     "source": "cc-stream-macos-fanout-io",
-    "index": "os_metrics"
+    "index": "llm_metrics"
   }
 ]

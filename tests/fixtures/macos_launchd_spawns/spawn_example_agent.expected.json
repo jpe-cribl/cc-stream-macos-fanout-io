@@ -9,6 +9,6 @@
     "host": "example-mac",
     "label": "example-agent",
     "source": "cc-stream-macos-fanout-io",
-    "index": "os_metrics"
+    "index": "llm_metrics"
   }
 ]

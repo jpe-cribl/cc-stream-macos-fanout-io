@@ -36,4 +36,4 @@ functions:
         - name: _time
           value: "_time || Date.now() / 1000"
         - name: index
-          value: "'os_metrics'"
+          value: C.vars.splunk_metrics_index

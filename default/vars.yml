@@ -1,0 +1,5 @@
+splunk_metrics_index:
+  type: string
+  description: Splunk metrics index for the Mac fan-out counters and gauge; the same index the Apple MLX metrics Pack writes the per-process and host series to.
+  value: "'llm_metrics'"
+  tags: macos,metrics,index

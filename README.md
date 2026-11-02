@@ -38,6 +38,10 @@ make build       # .crbl artifact
 - `label` is the service label in a `Successfully spawned <label>[<pid>]` line.
   Other unified-log lines produce rows with an empty `label` and a zero count.
 - `ws_monitor_gap_seconds` is the maximum `gap_s` per host in each window.
+- The `splunk_metrics_index` Pack variable sets the Splunk metrics index for all
+  four metrics. Its default is `llm_metrics`, the index the Apple MLX metrics
+  Pack writes the per-process, host load, memory, swap, and MacMon series to, so
+  every Mac metric is queryable in one Splunk metrics index.
 - Each pipeline aggregates every event on its route in 60 s windows. It emits
   aggregates only; original events do not pass through.
 - The `macos_process_starts_total`, `macos_app_checkins_total`, and
