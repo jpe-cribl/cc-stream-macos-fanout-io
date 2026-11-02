@@ -114,7 +114,7 @@ it("pipelines stamp the metrics index and do not publish by field", () => {
         .flatMap((fn) => fn.conf?.add ?? [])
         .map((a) => [a.name, a.value]),
     );
-    expect(stamped.index, pipeline).toBe("'os_metrics'");
+    expect(stamped.index, pipeline).toBe("C.vars.splunk_metrics_index");
   }
 });
 
