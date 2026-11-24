@@ -26,7 +26,7 @@ jobs:
     if: ${{ needs.release.outputs.release_created == 'true' }}
     permissions:
       contents: write
-    uses: jpe-cribl/.github/.github/workflows/cribl-pack-release.yml@703813c04bc0065721bc4251f7fed1b231a4da6d # main
+    uses: jpe-cribl/.github/.github/workflows/cribl-pack-release.yml@b8deb4115f9ff187c6b1b881fcef167f686e9f84 # main
     with:
       tag: ${{ needs.release.outputs.tag_name }}
 
