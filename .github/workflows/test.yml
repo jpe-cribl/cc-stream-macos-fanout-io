@@ -13,7 +13,7 @@ jobs:
     # Runs on the template too — the template now ships a working demo
     # passthrough pipeline + fixture so the harness gets exercised here
     # before consumer repos inherit it.
-    uses: jpe-cribl/.github/.github/workflows/cribl-pack-test.yml@b8deb4115f9ff187c6b1b881fcef167f686e9f84 # main
+    uses: jpe-cribl/.github/.github/workflows/cribl-pack-test.yml@e3b3fb1bb30fc814ed85e8ce66a47ef63c8b6c08 # main
     with:
       # CHANGE per pack: 'edge' for Cribl Edge packs, 'stream' for Cribl Stream packs.
       pack_type: stream
